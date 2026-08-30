@@ -1,11 +1,12 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { motion, type Variants } from "framer-motion"
+import { useEffect, useRef } from "react"
 import { ArrowUpRight, Mail } from "lucide-react"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { profile } from "@/lib/data"
+import { gsap } from "@/lib/gsap"
 
 // The WebGL canvas is loaded client-side only and lazily, so it never
 // blocks first paint or ships in the server bundle.
@@ -13,21 +14,49 @@ const HeroCanvas = dynamic(() => import("@/components/hero-canvas"), {
   ssr: false,
 })
 
-// Staggered entrance for the hero copy.
-const ease = [0.22, 1, 0.36, 1] as [number, number, number, number]
-
-const container: Variants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
-}
-const item: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } },
-}
-
 export function Hero() {
+  const rootRef = useRef<HTMLElement>(null)
+  const canvasWrapRef = useRef<HTMLDivElement>(null)
+  const badgeRef = useRef<HTMLParagraphElement>(null)
+  const headlineRef = useRef<HTMLHeadingElement>(null)
+  const roleRef = useRef<HTMLParagraphElement>(null)
+  const taglineRef = useRef<HTMLParagraphElement>(null)
+  const ctaRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const words = headlineRef.current?.querySelectorAll("[data-word]") ?? []
+      const ctaButtons = ctaRef.current?.children ?? []
+
+      const tl = gsap.timeline({ defaults: { ease: "power2.out" } })
+
+      tl.set([badgeRef.current, roleRef.current, taglineRef.current], { opacity: 0, y: 20 })
+      tl.set(words, { opacity: 0, y: 40 })
+      tl.set(ctaButtons, { opacity: 0, scale: 0.9 })
+      tl.set(canvasWrapRef.current, { opacity: 0 })
+
+      tl.to(badgeRef.current, { opacity: 1, y: 0, duration: 0.6 }, 0)
+        .to(canvasWrapRef.current, { opacity: 1, duration: 1.2, ease: "power1.out" }, 0.5)
+        .to(
+          words,
+          { opacity: 1, y: 0, duration: 0.8, stagger: 0.08, ease: "power3.out" },
+          0.2,
+        )
+        .to(roleRef.current, { opacity: 1, y: 0, duration: 0.7 }, 0.4)
+        .to(taglineRef.current, { opacity: 1, y: 0, duration: 0.7 }, 0.4)
+        .to(
+          ctaButtons,
+          { opacity: 1, scale: 1, duration: 0.5, stagger: 0.1, ease: "back.out(1.6)" },
+          0.6,
+        )
+    }, rootRef)
+
+    return () => ctx.revert()
+  }, [])
+
   return (
     <section
+      ref={rootRef}
       id="top"
       className="relative flex min-h-[100svh] items-center justify-center overflow-hidden px-6"
     >
@@ -35,49 +64,43 @@ export function Hero() {
       <div aria-hidden className="accent-glow pointer-events-none absolute inset-0" />
 
       {/* One (and only one) Three.js canvas for the whole page. */}
-      <div aria-hidden className="absolute inset-0 opacity-80">
+      <div ref={canvasWrapRef} aria-hidden className="absolute inset-0 opacity-80">
         <HeroCanvas />
       </div>
 
-      <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="relative z-10 mx-auto max-w-3xl text-center"
-      >
-        <motion.p
-          variants={item}
+      <div className="relative z-10 mx-auto max-w-3xl text-center">
+        <p
+          ref={badgeRef}
           className="mb-5 inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-sm text-muted-foreground"
         >
           <span className="size-2 rounded-full bg-primary" />
           {profile.location}
-        </motion.p>
+        </p>
 
-        <motion.h1
-          variants={item}
+        <h1
+          ref={headlineRef}
           className="text-balance text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl"
         >
-          {profile.name}
-        </motion.h1>
+          {profile.name.split(" ").map((word, i) => (
+            <span key={i} data-word className="inline-block will-change-transform">
+              {word}
+              {i < profile.name.split(" ").length - 1 ? " " : ""}
+            </span>
+          ))}
+        </h1>
 
-        <motion.p
-          variants={item}
-          className="mt-4 text-xl font-medium text-primary sm:text-2xl"
-        >
+        <p ref={roleRef} className="mt-4 text-xl font-medium text-primary sm:text-2xl">
           {profile.role}
-        </motion.p>
+        </p>
 
-        <motion.p
-          variants={item}
+        <p
+          ref={taglineRef}
           className="mx-auto mt-5 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg"
         >
           {profile.tagline}
-        </motion.p>
+        </p>
 
-        <motion.div
-          variants={item}
-          className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row"
-        >
+        <div ref={ctaRef} className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <a
             href="#experience"
             className={cn(
@@ -98,8 +121,8 @@ export function Hero() {
             <Mail className="size-4" />
             Contact
           </a>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </section>
   )
 }

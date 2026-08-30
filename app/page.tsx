@@ -23,7 +23,7 @@ export default function Page() {
         <Contact />
       </div>
 
-      <footer className="border-t border-border bg-background/80 px-6 py-12">
+      <footer className="border-t border-border bg-background/80 px-6 pb-8 pt-12">
         <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-[1.2fr_0.8fr_0.8fr]">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Portfolio</p>

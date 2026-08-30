@@ -89,27 +89,31 @@
   --sidebar-ring: #0071e3;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color-scheme: light;
-    --background: #f5f5f7;
-    --foreground: #111827;
-    --card: rgba(255, 255, 255, 0.72);
-    --card-foreground: #111827;
-    --popover: rgba(255, 255, 255, 0.8);
-    --popover-foreground: #111827;
-    --secondary: #eef2ff;
-    --secondary-foreground: #111827;
-    --muted: #f3f4f6;
-    --muted-foreground: #6b7280;
-    --border: rgba(15, 23, 42, 0.08);
-    --input: rgba(15, 23, 42, 0.06);
-    --sidebar: #ffffff;
-    --sidebar-foreground: #111827;
-    --sidebar-accent: #f3f4f6;
-    --sidebar-accent-foreground: #111827;
-    --sidebar-border: rgba(15, 23, 42, 0.08);
-  }
+/*
+  Light palette is applied via an explicit `.light` class (toggled by the
+  navbar, set before paint by the blocking script in layout.tsx) rather
+  than `prefers-color-scheme`, so the manual toggle always wins regardless
+  of the OS setting.
+*/
+html.light {
+  color-scheme: light;
+  --background: #f5f5f7;
+  --foreground: #111827;
+  --card: rgba(255, 255, 255, 0.72);
+  --card-foreground: #111827;
+  --popover: rgba(255, 255, 255, 0.8);
+  --popover-foreground: #111827;
+  --secondary: #eef2ff;
+  --secondary-foreground: #111827;
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+  --border: rgba(15, 23, 42, 0.08);
+  --input: rgba(15, 23, 42, 0.06);
+  --sidebar: #ffffff;
+  --sidebar-foreground: #111827;
+  --sidebar-accent: #f3f4f6;
+  --sidebar-accent-foreground: #111827;
+  --sidebar-border: rgba(15, 23, 42, 0.08);
 }
 
 html.dark {
@@ -196,6 +200,11 @@ html.dark {
   .animate-marquee-reverse {
     animation: marquee-x 40s linear infinite reverse;
   }
+
+  /* Barely-there atmospheric pulse behind the contact section. */
+  .animate-ambient-pulse {
+    animation: ambient-pulse 4s ease-in-out infinite;
+  }
 }
 
 @keyframes marquee-x {
@@ -204,6 +213,25 @@ html.dark {
   }
   to {
     transform: translateX(-50%);
+  }
+}
+
+@keyframes ambient-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Custom cursor replaces the native pointer on fine-pointer devices only. */
+@media (pointer: fine) {
+  body.custom-cursor-active,
+  body.custom-cursor-active a,
+  body.custom-cursor-active button {
+    cursor: none;
   }
 }
 
