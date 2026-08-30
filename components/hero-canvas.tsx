@@ -25,12 +25,22 @@ export default function HeroCanvas() {
     const canvas = document.createElement("canvas")
     container.appendChild(canvas)
 
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      alpha: true,
-      antialias: true,
-      powerPreference: "low-power",
-    })
+    // WebGL context creation can throw on machines with hardware
+    // acceleration disabled, GPU driver blocklists, or inside a VM/RDP
+    // session — fail quietly instead of crashing the hero section.
+    let renderer: THREE.WebGLRenderer
+    try {
+      renderer = new THREE.WebGLRenderer({
+        canvas,
+        alpha: true,
+        antialias: true,
+        powerPreference: "low-power",
+      })
+    } catch (err) {
+      console.warn("Hero canvas: WebGL unavailable, skipping background animation.", err)
+      container.removeChild(canvas)
+      return
+    }
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
     renderer.setSize(container.clientWidth, container.clientHeight)
 
