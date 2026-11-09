@@ -1,87 +1,53 @@
-"use client"
-
-import { Mail, Phone, FileText, ArrowUpRight } from "lucide-react"
-import type { LucideIcon } from "lucide-react"
-import { motion } from "framer-motion"
-import { SectionHeading } from "@/components/section-heading"
+import { ArrowUpRight, FileText, Mail, Phone } from "lucide-react"
+import { Section } from "@/components/section-heading"
+import { StatusDot } from "@/components/status-dot"
 import { profile } from "@/lib/data"
 
-type Link = {
-  label: string
-  value: string
-  href: string
-  icon: LucideIcon
-}
-
-const primary: Link[] = [
-  { label: "Email", value: profile.email, href: `mailto:${profile.email}`, icon: Mail },
-  { label: "Phone", value: profile.phone, href: `tel:${profile.phone}`, icon: Phone },
+const rows = [
+  { label: "Email", value: profile.email, href: `mailto:${profile.email}`, icon: Mail, external: false },
+  { label: "Phone", value: profile.phone, href: `tel:${profile.phone.replace(/\s/g, "")}`, icon: Phone, external: false },
+  { label: "Resume", value: "View or download PDF", href: profile.resume, icon: FileText, external: true },
 ]
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const } },
-}
-
-const staggerContainer = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.08 } },
-}
 
 export function Contact() {
   return (
-    <section id="contact" className="relative mx-auto max-w-5xl px-6 py-28">
-      {/* Barely-there ambient pulse — atmospheric only. */}
-      <div
-        aria-hidden
-        className="animate-ambient-pulse pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_30%,_rgba(0,113,227,0.14),transparent_60%)]"
-      />
-
-      <SectionHeading
-        eyebrow="Contact"
-        title="Let's build something"
-        description="Open to interesting full-stack roles and collaborations. The fastest way to reach me is directly by email or phone."
-        splitWords
-      />
-
-      <motion.div
-        className="mx-auto max-w-2xl"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-60px" }}
-        variants={staggerContainer}
-      >
-        <div className="grid gap-4 sm:grid-cols-2">
-          {primary.map((link) => (
-            <motion.a
-              key={link.label}
-              href={link.href}
-              variants={fadeUp}
-              className="glass group flex items-center gap-4 rounded-2xl p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/40"
-            >
-              <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary/15 text-primary">
-                <link.icon className="size-5" />
-              </span>
-              <span className="min-w-0">
-                <span className="block text-sm text-muted-foreground">{link.label}</span>
-                <span className="block truncate font-medium">{link.value}</span>
-              </span>
-            </motion.a>
-          ))}
+    <Section id="contact">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-12 md:grid-cols-[minmax(0,1fr)_minmax(0,28rem)] md:gap-16">
+        <div>
+          <p className="font-mono text-xs text-subtle">
+            05 <span className="px-1">/</span> Contact
+          </p>
+          <h2 className="mt-3 max-w-lg text-4xl font-medium tracking-[-0.03em] sm:text-5xl">
+            Let&apos;s build something
+          </h2>
+          <p className="mt-5 flex items-baseline gap-2.5 text-[15px] leading-relaxed text-muted-foreground">
+            <span className="translate-y-[-1px]">
+              <StatusDot />
+            </span>
+            <span>{profile.status}. Email is the fastest way to reach me</span>
+          </p>
         </div>
 
-        <motion.a
-          href={profile.resume}
-          target="_blank"
-          rel="noopener noreferrer"
-          variants={fadeUp}
-          className="glass group mt-4 flex items-center justify-center gap-3 rounded-2xl p-5 font-medium transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:text-primary"
-        >
-          <FileText className="size-5 text-primary" />
-          View / download resume
-          <ArrowUpRight className="size-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary" />
-        </motion.a>
-      </motion.div>
-    </section>
+        <ul className="self-end rounded-2xl border border-border bg-card p-2">
+          {rows.map((row) => (
+            <li key={row.label}>
+              <a
+                href={row.href}
+                {...(row.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                className="group flex items-center gap-3 rounded-lg px-3 py-3 transition-colors duration-150 hover:bg-raised"
+              >
+                <row.icon className="size-[18px] shrink-0 text-subtle" strokeWidth={1.5} />
+                <span className="w-16 shrink-0 text-sm text-subtle">{row.label}</span>
+                <span className="min-w-0 flex-1 truncate text-[15px]">{row.value}</span>
+                <ArrowUpRight
+                  className="size-4 shrink-0 text-subtle transition-[color,transform] duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground"
+                  strokeWidth={1.5}
+                />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Section>
   )
 }

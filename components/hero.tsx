@@ -1,128 +1,104 @@
-"use client"
+import { ArrowDown, Mail } from "lucide-react"
+import { StatusDot } from "@/components/status-dot"
+import { experience, profile } from "@/lib/data"
 
-import dynamic from "next/dynamic"
-import { useEffect, useRef } from "react"
-import { ArrowUpRight, Mail } from "lucide-react"
-import { buttonVariants } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import { profile } from "@/lib/data"
-import { gsap } from "@/lib/gsap"
+const current = experience[0]
 
-// The WebGL canvas is loaded client-side only and lazily, so it never
-// blocks first paint or ships in the server bundle.
-const HeroCanvas = dynamic(() => import("@/components/hero-canvas"), {
-  ssr: false,
-})
+// The hero's one "moment": a terminal-style readout built only from facts
+// already on the page, styled like the consoles behind a building
+// management system.
+const readout: { key: string; value: string }[] = [
+  { key: "name", value: profile.name },
+  { key: "role", value: current.role },
+  { key: "company", value: `${current.company.replace(" Pvt Ltd", "")}, ${current.location}` },
+  { key: "project", value: current.project },
+  { key: "backend", value: "Ruby on Rails, Node.js, Express" },
+  { key: "data", value: "PostgreSQL, Redis, OpenSearch" },
+  { key: "frontend", value: "React, Vite, Tailwind CSS" },
+  { key: "based in", value: profile.location.replace(", India", "") },
+]
 
 export function Hero() {
-  const rootRef = useRef<HTMLElement>(null)
-  const canvasWrapRef = useRef<HTMLDivElement>(null)
-  const badgeRef = useRef<HTMLParagraphElement>(null)
-  const headlineRef = useRef<HTMLHeadingElement>(null)
-  const roleRef = useRef<HTMLParagraphElement>(null)
-  const taglineRef = useRef<HTMLParagraphElement>(null)
-  const ctaRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const words = headlineRef.current?.querySelectorAll("[data-word]") ?? []
-      const ctaButtons = ctaRef.current?.children ?? []
-
-      const tl = gsap.timeline({ defaults: { ease: "power2.out" } })
-
-      tl.set([badgeRef.current, roleRef.current, taglineRef.current], { opacity: 0, y: 20 })
-      tl.set(words, { opacity: 0, y: 40 })
-      tl.set(ctaButtons, { opacity: 0, scale: 0.9 })
-      tl.set(canvasWrapRef.current, { opacity: 0 })
-
-      tl.to(badgeRef.current, { opacity: 1, y: 0, duration: 0.6 }, 0)
-        .to(canvasWrapRef.current, { opacity: 1, duration: 1.2, ease: "power1.out" }, 0.5)
-        .to(
-          words,
-          { opacity: 1, y: 0, duration: 0.8, stagger: 0.08, ease: "power3.out" },
-          0.2,
-        )
-        .to(roleRef.current, { opacity: 1, y: 0, duration: 0.7 }, 0.4)
-        .to(taglineRef.current, { opacity: 1, y: 0, duration: 0.7 }, 0.4)
-        .to(
-          ctaButtons,
-          { opacity: 1, scale: 1, duration: 0.5, stagger: 0.1, ease: "back.out(1.6)" },
-          0.6,
-        )
-    }, rootRef)
-
-    return () => ctx.revert()
-  }, [])
-
   return (
     <section
-      ref={rootRef}
       id="top"
-      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden px-6"
+      className="mx-auto grid min-h-[100svh] max-w-6xl items-center gap-12 px-6 pb-16 pt-28 lg:grid-cols-[1fr_minmax(0,30rem)] lg:gap-16 lg:pt-16"
     >
-      {/* Soft radial accent glow painted with CSS, sits behind the canvas. */}
-      <div aria-hidden className="accent-glow pointer-events-none absolute inset-0" />
-
-      {/* One (and only one) Three.js canvas for the whole page. */}
-      <div ref={canvasWrapRef} aria-hidden className="absolute inset-0 opacity-80">
-        <HeroCanvas />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-3xl text-center">
-        <p
-          ref={badgeRef}
-          className="mb-5 inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-sm text-muted-foreground"
-        >
-          <span className="size-2 rounded-full bg-primary" />
-          {profile.location}
+      <div>
+        <p className="rise flex items-center gap-2.5 text-sm text-muted-foreground">
+          <StatusDot />
+          {profile.status}
         </p>
 
         <h1
-          ref={headlineRef}
-          className="text-balance text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl"
+          className="rise mt-6 text-[2.75rem] font-medium leading-[1.04] tracking-[-0.03em] sm:text-6xl lg:text-[4.25rem]"
+          style={{ animationDelay: "60ms" }}
         >
-          {profile.name.split(" ").map((word, i) => (
-            <span key={i} data-word className="inline-block will-change-transform">
-              {word}
-              {i < profile.name.split(" ").length - 1 ? " " : ""}
-            </span>
-          ))}
+          Tamilarasan
+          <br />
+          Selvakumar
         </h1>
 
-        <p ref={roleRef} className="mt-4 text-xl font-medium text-primary sm:text-2xl">
-          {profile.role}
-        </p>
-
         <p
-          ref={taglineRef}
-          className="mx-auto mt-5 max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg"
+          className="rise mt-6 max-w-[34rem] text-lg leading-[1.6] text-muted-foreground"
+          style={{ animationDelay: "120ms" }}
         >
-          {profile.tagline}
+          <span className="text-foreground">{profile.role}.</span> {profile.intro}
         </p>
 
-        <div ref={ctaRef} className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <div className="rise mt-8 flex flex-wrap items-center gap-3" style={{ animationDelay: "180ms" }}>
           <a
             href="#experience"
-            className={cn(
-              buttonVariants({ size: "lg" }),
-              "h-11 rounded-full bg-primary px-7 text-primary-foreground hover:bg-primary/90",
-            )}
+            className="inline-flex h-11 items-center gap-2 rounded-lg bg-signal px-5 text-[15px] font-medium text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.16)] dark:text-background transition-[opacity,transform] duration-150 hover:opacity-90 active:scale-[0.98]"
           >
-            View work
-            <ArrowUpRight className="size-4" />
+            View experience
+            <ArrowDown className="size-4" strokeWidth={1.5} />
           </a>
           <a
-            href="#contact"
-            className={cn(
-              buttonVariants({ variant: "outline", size: "lg" }),
-              "h-11 rounded-full border-white/15 bg-white/5 px-7 backdrop-blur-xl hover:bg-white/10 hover:text-foreground",
-            )}
+            href={`mailto:${profile.email}`}
+            className="inline-flex h-11 items-center gap-2 rounded-lg border border-border bg-card px-5 text-[15px] font-medium text-foreground transition-[background-color,transform] duration-150 hover:bg-raised active:scale-[0.98]"
           >
-            <Mail className="size-4" />
-            Contact
+            <Mail className="size-4 text-muted-foreground" strokeWidth={1.5} />
+            Email me
           </a>
         </div>
       </div>
+
+      <figure
+        className="rise overflow-hidden rounded-2xl border border-border bg-deep font-mono text-[13px] leading-6 shadow-[0_8px_24px_rgb(0_0_0/0.06)] dark:shadow-[0_24px_48px_-24px_rgb(0_0_0/0.5)]"
+        style={{ animationDelay: "240ms" }}
+        aria-label="Profile summary"
+      >
+        <div className="flex h-10 items-center gap-2 border-b border-border px-4">
+          <span className="size-2.5 rounded-full bg-subtle/30" />
+          <span className="size-2.5 rounded-full bg-subtle/30" />
+          <span className="size-2.5 rounded-full bg-subtle/30" />
+          <span className="ml-2 text-xs text-subtle">tamilarasan@portfolio: ~</span>
+        </div>
+
+        <div className="px-5 py-5">
+          <p>
+            <span className="text-subtle">~ $</span> <span className="text-foreground">whoami</span>
+          </p>
+          <dl className="mt-3 grid grid-cols-[5.5rem_1fr] gap-x-4">
+            {readout.map((row) => (
+              <div key={row.key} className="contents">
+                <dt className="text-subtle">{row.key}</dt>
+                <dd className="text-muted-foreground">{row.value}</dd>
+              </div>
+            ))}
+            <dt className="text-subtle">status</dt>
+            <dd className="flex items-center gap-2 text-signal-ink">
+              <StatusDot />
+              open to full-stack roles
+            </dd>
+          </dl>
+          <p className="mt-3">
+            <span className="text-subtle">~ $</span>{" "}
+            <span aria-hidden className="inline-block h-4 w-2 translate-y-[3px] bg-muted-foreground/70" />
+          </p>
+        </div>
+      </figure>
     </section>
   )
 }

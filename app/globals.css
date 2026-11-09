@@ -4,188 +4,107 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+  Direction: "control room" — the instrument panels and logs behind the
+  building-management systems this engineer works on. Midnight-navy
+  neutrals, one cobalt accent used sparingly, Geist with Geist Mono for meta.
+*/
 @theme inline {
-  /* Apple-style system font stack, exposed as font-sans */
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
-    "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+
   --color-background: var(--background);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --color-deep: var(--deep);
+  --color-card: var(--card);
+  --color-card-foreground: var(--foreground);
+  --color-raised: var(--raised);
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-subtle: var(--subtle);
+  --color-border: var(--border);
+  --color-signal: var(--signal);
+  --color-signal-ink: var(--signal-ink);
+
+  /* shadcn compatibility for components/ui */
+  --color-primary: var(--foreground);
+  --color-primary-foreground: var(--background);
+  --color-secondary: var(--raised);
+  --color-secondary-foreground: var(--foreground);
+  --color-muted: var(--raised);
+  --color-accent: var(--raised);
+  --color-accent-foreground: var(--foreground);
+  --color-popover: var(--card);
+  --color-popover-foreground: var(--foreground);
+  --color-destructive: var(--destructive);
+  --color-input: var(--border);
+  --color-ring: var(--signal);
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/*
-  Dark-only, near-black Apple-style palette.
-  3-5 colors total: near-black bg (#0a0a0a), layered dark neutrals,
-  soft off-white text, and a single electric-blue accent (#0071e3).
-*/
-:root {
-  color-scheme: dark;
-  --background: #0a0a0a; /* near-black canvas */
-  --foreground: #f5f5f7; /* Apple off-white text */
-  --card: #121214; /* raised glass base */
-  --card-foreground: #f5f5f7;
-  --popover: #121214;
-  --popover-foreground: #f5f5f7;
-  --primary: #0071e3; /* electric blue accent */
-  --primary-foreground: #ffffff;
-  --secondary: #1c1c1e;
-  --secondary-foreground: #f5f5f7;
-  --muted: #1c1c1e;
-  --muted-foreground: #86868b; /* Apple secondary gray */
-  --accent: #0071e3;
-  --accent-foreground: #ffffff;
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: rgba(255, 255, 255, 0.1); /* hairline glass border */
-  --input: rgba(255, 255, 255, 0.15);
-  --ring: #0071e3;
-  --chart-1: #0071e3;
-  --chart-2: #2997ff;
-  --chart-3: #64d2ff;
-  --chart-4: #5e5ce6;
-  --chart-5: #86868b;
-  --radius: 1rem; /* 16px — Apple-ish rounded corners */
-  --sidebar: #121214;
-  --sidebar-foreground: #f5f5f7;
-  --sidebar-primary: #0071e3;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #1c1c1e;
-  --sidebar-accent-foreground: #f5f5f7;
-  --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: #0071e3;
-}
-
-/*
-  Light palette is applied via an explicit `.light` class (toggled by the
-  navbar, set before paint by the blocking script in layout.tsx) rather
-  than `prefers-color-scheme`, so the manual toggle always wins regardless
-  of the OS setting.
-*/
-html.light {
-  color-scheme: light;
-  --background: #f5f5f7;
-  --foreground: #111827;
-  --card: rgba(255, 255, 255, 0.72);
-  --card-foreground: #111827;
-  --popover: rgba(255, 255, 255, 0.8);
-  --popover-foreground: #111827;
-  --secondary: #eef2ff;
-  --secondary-foreground: #111827;
-  --muted: #f3f4f6;
-  --muted-foreground: #6b7280;
-  --border: rgba(15, 23, 42, 0.08);
-  --input: rgba(15, 23, 42, 0.06);
-  --sidebar: #ffffff;
-  --sidebar-foreground: #111827;
-  --sidebar-accent: #f3f4f6;
-  --sidebar-accent-foreground: #111827;
-  --sidebar-border: rgba(15, 23, 42, 0.08);
-}
-
+/* Dark is the default; the `.light` class is set before paint by layout.tsx. */
+:root,
 html.dark {
   color-scheme: dark;
-  --background: #0a0a0a; /* near-black canvas */
-  --foreground: #f5f5f7; /* Apple off-white text */
-  --card: #121214; /* raised glass base */
-  --card-foreground: #f5f5f7;
-  --popover: #121214;
-  --popover-foreground: #f5f5f7;
-  --primary: #0071e3; /* electric blue accent */
-  --primary-foreground: #ffffff;
-  --secondary: #1c1c1e;
-  --secondary-foreground: #f5f5f7;
-  --muted: #1c1c1e;
-  --muted-foreground: #86868b; /* Apple secondary gray */
-  --accent: #0071e3;
-  --accent-foreground: #ffffff;
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: rgba(255, 255, 255, 0.1); /* hairline glass border */
-  --input: rgba(255, 255, 255, 0.15);
-  --ring: #0071e3;
-  --chart-1: #0071e3;
-  --chart-2: #2997ff;
-  --chart-3: #64d2ff;
-  --chart-4: #5e5ce6;
-  --chart-5: #86868b;
-  --radius: 1rem; /* 16px — Apple-ish rounded corners */
-  --sidebar: #121214;
-  --sidebar-foreground: #f5f5f7;
-  --sidebar-primary: #0071e3;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #1c1c1e;
-  --sidebar-accent-foreground: #f5f5f7;
-  --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: #0071e3;
+  --deep: #070a14;
+  --background: #0a0e1a;
+  --card: #111729;
+  --raised: #1a2238;
+  --foreground: #e8ecf7;
+  --muted-foreground: #a3adc4;
+  --subtle: #7d88a3;
+  --border: rgb(232 236 247 / 0.08);
+  --signal: #5b8cff;
+  --signal-ink: #7da3ff;
+  --destructive: #e5484d;
+}
+
+html.light {
+  color-scheme: light;
+  --deep: #eaeef8;
+  --background: #f5f7fc;
+  --card: #ffffff;
+  --raised: #eaeef8;
+  --foreground: #0f172a;
+  --muted-foreground: #475569;
+  --subtle: #64748b;
+  --border: rgb(15 23 42 / 0.09);
+  --signal: #2563eb;
+  /* darker cobalt where the accent is used as text on a light surface */
+  --signal-ink: #1d4ed8;
+  --destructive: #dc2626;
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
   }
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background font-sans text-foreground antialiased;
+    font-feature-settings: 'ss01', 'cv11';
+  }
+  ::selection {
+    background-color: color-mix(in srgb, var(--signal) 35%, transparent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 2px;
+    border-radius: 6px;
   }
 }
 
 @layer utilities {
   /*
-    Reusable glass panel: translucent white fill, heavy backdrop blur,
-    hairline border, and a soft top highlight for subtle 3D depth.
-  */
-  .glass {
-    background-color: rgb(255 255 255 / 0.05);
-    border: 1px solid rgb(255 255 255 / 0.1);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-  }
-
-  /* Soft radial glow used behind the hero for atmosphere. */
-  .accent-glow {
-    background: radial-gradient(
-      60% 60% at 50% 40%,
-      rgb(0 113 227 / 0.28) 0%,
-      rgb(0 113 227 / 0) 70%
-    );
-  }
-
-  /*
-    Monochrome logo silhouette, painted in currentColor via CSS mask.
+    Single-color logo silhouette painted in currentColor via CSS mask.
     Set the source with the inline `--logo: url(...)` custom property.
-    Used for the faint scrolling logo backdrop in the skills section.
   */
   .logo-mask {
     background-color: currentColor;
@@ -193,54 +112,41 @@ html.dark {
     mask: var(--logo) center / contain no-repeat;
   }
 
-  /* Two seamless marquee tracks drifting in opposite directions. */
-  .animate-marquee {
-    animation: marquee-x 40s linear infinite;
-  }
-  .animate-marquee-reverse {
-    animation: marquee-x 40s linear infinite reverse;
-  }
-
-  /* Barely-there atmospheric pulse behind the contact section. */
-  .animate-ambient-pulse {
-    animation: ambient-pulse 4s ease-in-out infinite;
+  /* The one entrance on load: a short fade and rise for the hero. */
+  .rise {
+    animation: rise 480ms var(--ease-out) both;
   }
 }
 
-@keyframes marquee-x {
+@keyframes rise {
   from {
-    transform: translateX(0);
+    opacity: 0;
+    transform: translateY(8px);
   }
   to {
-    transform: translateX(-50%);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@keyframes ambient-pulse {
-  0%,
-  100% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 0.6;
-  }
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
-/* Custom cursor replaces the native pointer on fine-pointer devices only. */
-@media (pointer: fine) {
-  body.custom-cursor-active,
-  body.custom-cursor-active a,
-  body.custom-cursor-active button {
-    cursor: none;
-  }
-}
-
-/* Respect users who prefer reduced motion: neutralize transforms/animations. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
